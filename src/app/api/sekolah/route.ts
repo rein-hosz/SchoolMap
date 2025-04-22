@@ -26,9 +26,16 @@ export async function GET() {
       FROM sekolah
     `);
 
+    if (!result.rows || result.rows.length === 0) {
+      return NextResponse.json({ message: 'No schools found' }, { status: 404 });
+    }
+
     return NextResponse.json(result.rows);
   } catch (error) {
     console.error('Error fetching sekolah:', error);
-    return NextResponse.json({ error: 'Failed to fetch sekolah data' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 }
