@@ -11,6 +11,7 @@ import {
 import { IoClose } from "react-icons/io5";
 import L from "leaflet";
 import { RouteInfo } from "./RoutingControl";
+import RouteInformationPanel from './RouteInformationPanel';
 
 interface RoutingSidebarProps {
   schools: Sekolah[];
@@ -228,7 +229,7 @@ export default function RoutingSidebar({
             Starting Point
           </label>
           <select
-            className="w-full p-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white/80 shadow-sm text-neutral-800 text-sm"
+            className="w-full p-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-neutral-800 text-sm"
             value={
               selectedOrigin === null
                 ? ""
@@ -280,7 +281,7 @@ export default function RoutingSidebar({
             Destination
           </label>
           <select
-            className="w-full p-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white/80 shadow-sm text-neutral-800 text-sm"
+            className="w-full p-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white text-neutral-800 text-sm"
             value={
               selectedDestination === null ? "" : selectedDestination.toString()
             }
@@ -314,7 +315,7 @@ export default function RoutingSidebar({
             }
           >
             <FaRoute className="w-3.5 h-3.5" />
-            Find Route
+            Get Directions
           </button>
           <button
             onClick={handleClearRoute}
@@ -326,33 +327,47 @@ export default function RoutingSidebar({
         </div>
 
         {/* Route Results */}
-        <div className="mt-4 pt-4 border-t border-neutral-200">
-          <h4 className="text-sm font-medium text-neutral-700 mb-2">
-            Route Information
-          </h4>
+        {routeInfo ? (
+          <div className="mt-4 pt-4 border-t border-neutral-200">
+            <div className="bg-indigo-600 rounded-lg p-3 text-white">
+              <h4 className="text-sm font-medium mb-2">Route Information</h4>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1">
+                  <FaRoute className="w-4 h-4 text-indigo-200" />
+                  <span className="text-sm">{(routeInfo.distance / 1000).toFixed(1)} km</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-indigo-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  <span className="text-sm">{Math.round(routeInfo.duration / 60)} min</span>
+                </div>
+              </div>
+            </div>
 
-          {routeInfo ? (
-            <div className="space-y-3">
-              {/* Route Summary */}
-              <div className="bg-indigo-50 rounded-lg p-3 border border-indigo-100">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-indigo-700 font-medium">
-                    {getOriginName()} → {getDestinationName()}
+            <div className="mt-3 bg-white rounded-lg border border-neutral-200 overflow-hidden">
+              <div className="p-3 bg-indigo-50 border-b border-indigo-100">
+                <div className="text-xs text-indigo-700 font-medium">
+                  <div className="flex items-center gap-1.5">
+                    <FaLocationDot className="text-indigo-500 w-3 h-3" />
+                    <span className="truncate">{getOriginName()}</span>
                   </div>
-                  <div className="text-xs bg-indigo-600 text-white px-2 py-0.5 rounded-full font-medium">
-                    {routeInfo.summary}
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <FaSchool className="text-indigo-500 w-3 h-3" />
+                    <span className="truncate">{getDestinationName()}</span>
                   </div>
                 </div>
               </div>
 
               {/* Route Instructions */}
-              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+              <div className="max-h-[300px] overflow-y-auto">
                 {routeInfo.instructions.map((instruction, index) => (
                   <div
                     key={index}
-                    className="flex items-start gap-2 text-xs border-b border-neutral-100 pb-2"
+                    className="flex items-start gap-2 text-xs p-3 border-b border-neutral-100"
                   >
-                    <div className="p-1.5 bg-indigo-50 rounded-md mt-0.5">
+                    <div className="p-1.5 bg-indigo-50 rounded-md">
                       {getInstructionIcon(instruction.type)}
                     </div>
                     <div className="flex-1">
@@ -369,12 +384,17 @@ export default function RoutingSidebar({
                 ))}
               </div>
             </div>
-          ) : (
-            <div className="text-xs text-neutral-500">
+          </div>
+        ) : (
+          <div className="mt-4 pt-4 border-t border-neutral-200">
+            <h4 className="text-sm font-medium text-neutral-700 mb-2">
+              Route Information
+            </h4>
+            <div className="text-xs text-neutral-500 bg-neutral-50 p-3 rounded-lg border border-neutral-200">
               Select origin and destination to see route details
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
