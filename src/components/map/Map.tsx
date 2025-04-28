@@ -4,15 +4,14 @@ import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Sekolah } from "@/types/school";
-import LayerSwitcher, { MapLayerType, MAP_LAYERS } from "./LayerSwitcher";
+import LayerSwitcher, { MAP_LAYERS } from "./LayerSwitcher";
 import SchoolPopup from "./SchoolPopup";
 import SchoolSearch from "./SchoolSearch";
 import LocationControl from "./LocationControl";
 import RoutingControl, { RouteInfo } from "./RoutingControl";
 import { useLocation } from "@/contexts/LocationContext";
 
-// Create marker icons after import
-// @ts-ignore - Ignore TypeScript errors for icon properties
+// Create marker icons after import with proper type assertion
 const defaultIcon = L.icon({
   iconUrl: "/leaflet/marker-icon.png",
   iconRetinaUrl: "/leaflet/marker-icon-2x.png",
@@ -21,9 +20,8 @@ const defaultIcon = L.icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
-});
+} as any); // Use 'any' to bypass type checking for icon properties
 
-// @ts-ignore - Ignore TypeScript errors for icon properties
 const redMarkerIcon = L.icon({
   iconUrl: "/marker/marker-icon-red.png",
   iconRetinaUrl: "/marker/marker-icon-2x-red.png",
@@ -32,17 +30,16 @@ const redMarkerIcon = L.icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
-});
+} as any); // Use 'any' to bypass type checking for icon properties
 
 // Add location icon for user location marker
-// @ts-ignore - Ignore TypeScript errors for icon properties
 const locationIcon = L.icon({
   iconUrl: "/marker/location.png",
   shadowUrl: "/leaflet/marker-shadow.png",
   iconSize: [32, 32],
   iconAnchor: [16, 16],
   popupAnchor: [0, -16],
-});
+} as any); // Use 'any' to bypass type checking for icon properties
 
 // Add MapController component to handle map reference
 function MapController({ map }: { map: L.Map | null }) {
