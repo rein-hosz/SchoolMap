@@ -7,6 +7,9 @@ import LayerSwitcher, { MapLayerType, MAP_LAYERS } from "./LayerSwitcher";
 import SchoolPopup from "./SchoolPopup";
 import SchoolSearch from "./SchoolSearch";
 import LocationControl from "./LocationControl";
+import RoutingControl from "./RoutingControl";
+import { useLocation } from "@/contexts/LocationContext";
+import { getUserLocation } from "@/lib/location";
 
 // Create marker icons after import
 const defaultIcon = L.icon({
@@ -29,6 +32,15 @@ const redMarkerIcon = L.icon({
   shadowSize: [41, 41],
 });
 
+// Add location icon for user location marker
+const locationIcon = L.icon({
+  iconUrl: "/marker/location.png",
+  shadowUrl: "/leaflet/marker-shadow.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -16],
+});
+
 // Add MapController component to handle map reference
 function MapController({ map }: { map: L.Map | null }) {
   const leafletMap = useMap();
@@ -42,11 +54,27 @@ function MapController({ map }: { map: L.Map | null }) {
   return null;
 }
 
-export default function Map({ data }: { data: Sekolah[] }) {
+interface MapProps {
+  data: Sekolah[];
+  onMapReady?: (map: L.Map) => void;
+  onUserLocationUpdate?: (location: L.LatLng) => void;
+  routeOrigin?: 'user' | number | null;
+  routeDestination?: number | null;
+  onRouteInfoUpdate?: (routeInfo: RouteInfo | null) => void;
+}
+
+export default function Map({ 
+  data, 
+  onMapReady, 
+  onUserLocationUpdate,
+  routeOrigin,
+  routeDestination,
+  onRouteInfoUpdate
+}: MapProps) {
   const [mapLayer, setMapLayer] = useState<MapLayerType>("osm");
   const [selectedSchool, setSelectedSchool] = useState<Sekolah | null>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const [userLocation, setUserLocation] = useState<L.LatLng | null>(null);
+  const { userLocation } = useLocation();
 
   useEffect(() => {
     // Initialize leaflet
@@ -56,29 +84,13 @@ export default function Map({ data }: { data: Sekolah[] }) {
 
       // Add location found event handler
       if (mapRef.current) {
-        // Remove any existing handlers to prevent duplicates
-        mapRef.current.off("locationfound");
-        mapRef.current.off("locationerror");
-
-        mapRef.current.on("locationfound", (e) => {
-          console.log("Location found:", e.latlng);
-          setUserLocation(e.latlng);
-        });
-
-        mapRef.current.on("locationerror", (error) => {
-          console.error("Location error:", error.message);
-        });
+        // Pass map reference to parent
+        if (onMapReady) {
+          onMapReady(mapRef.current);
+        }
       }
     }
-
-    // Cleanup function to remove event handlers
-    return () => {
-      if (mapRef.current) {
-        mapRef.current.off("locationfound");
-        mapRef.current.off("locationerror");
-      }
-    };
-  }, []);
+  }, [onMapReady]);
 
   const handleSchoolSelect = useCallback((school: Sekolah) => {
     if (mapRef.current) {
@@ -147,7 +159,14 @@ export default function Map({ data }: { data: Sekolah[] }) {
           ) : null
         )}
 
-        <LocationControl />
+        <LocationControl onLocationUpdate={onUserLocationUpdate} />
+        <RoutingControl 
+          userLocation={userLocation} 
+          schools={data} 
+          origin={routeOrigin}
+          destination={routeDestination}
+          onRouteInfoUpdate={onRouteInfoUpdate}
+        />
 
         {userLocation && (
           <Marker position={userLocation} icon={locationIcon}>

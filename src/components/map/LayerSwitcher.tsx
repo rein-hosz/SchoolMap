@@ -38,8 +38,8 @@ export default function LayerSwitcher({ currentLayer, onLayerChange }: LayerSwit
     <>
       <button
         onClick={() => setShowMenu(!showMenu)}
-        className="absolute bottom-8 left-8 z-[1000] bg-white/90 backdrop-blur-md p-3 rounded-lg shadow-lg border border-neutral-200 
-          transition-all duration-300 hover:bg-white hover:shadow-xl hover:scale-105 group"
+        className="absolute bottom-8 left-8 z-[1000] bg-white/90 backdrop-blur-md p-2.5 rounded-lg shadow-lg border border-neutral-200 
+          transition-all duration-300 hover:bg-white hover:shadow-xl w-10 h-10 flex items-center justify-center"
         aria-label="Change map layer"
       >
         {createElement(MAP_LAYERS[currentLayer].icon, {
