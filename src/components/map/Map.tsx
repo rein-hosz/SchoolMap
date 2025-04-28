@@ -6,6 +6,10 @@ import { Sekolah } from "@/types/school";
 import LayerSwitcher, { MapLayerType, MAP_LAYERS } from "./LayerSwitcher";
 import SchoolPopup from "./SchoolPopup";
 import SchoolSearch from "./SchoolSearch";
+import LocationControl from "./LocationControl";
+import RoutingControl from "./RoutingControl";
+import { useLocation } from "@/contexts/LocationContext";
+import { getUserLocation } from "@/lib/location";
 
 // Create marker icons after import
 const defaultIcon = L.icon({
@@ -15,7 +19,7 @@ const defaultIcon = L.icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowSize: [41, 41],
 });
 
 const redMarkerIcon = L.icon({
@@ -25,13 +29,22 @@ const redMarkerIcon = L.icon({
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
-  shadowSize: [41, 41]
+  shadowSize: [41, 41],
+});
+
+// Add location icon for user location marker
+const locationIcon = L.icon({
+  iconUrl: "/marker/location.png",
+  shadowUrl: "/leaflet/marker-shadow.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -16],
 });
 
 // Add MapController component to handle map reference
 function MapController({ map }: { map: L.Map | null }) {
   const leafletMap = useMap();
-  
+
   useEffect(() => {
     if (map === null) {
       leafletMap.setView([3.5952, 98.6722], 13);
@@ -41,18 +54,43 @@ function MapController({ map }: { map: L.Map | null }) {
   return null;
 }
 
-export default function Map({ data }: { data: Sekolah[] }) {
-  const [mapLayer, setMapLayer] = useState<MapLayerType>('osm');
+interface MapProps {
+  data: Sekolah[];
+  onMapReady?: (map: L.Map) => void;
+  onUserLocationUpdate?: (location: L.LatLng) => void;
+  routeOrigin?: 'user' | number | null;
+  routeDestination?: number | null;
+  onRouteInfoUpdate?: (routeInfo: RouteInfo | null) => void;
+}
+
+export default function Map({ 
+  data, 
+  onMapReady, 
+  onUserLocationUpdate,
+  routeOrigin,
+  routeDestination,
+  onRouteInfoUpdate
+}: MapProps) {
+  const [mapLayer, setMapLayer] = useState<MapLayerType>("osm");
   const [selectedSchool, setSelectedSchool] = useState<Sekolah | null>(null);
   const mapRef = useRef<L.Map | null>(null);
+  const { userLocation } = useLocation();
 
   useEffect(() => {
     // Initialize leaflet
     if (typeof window !== "undefined") {
       // Set default icon for all markers
       L.Marker.prototype.options.icon = defaultIcon;
+
+      // Add location found event handler
+      if (mapRef.current) {
+        // Pass map reference to parent
+        if (onMapReady) {
+          onMapReady(mapRef.current);
+        }
+      }
     }
-  }, []);
+  }, [onMapReady]);
 
   const handleSchoolSelect = useCallback((school: Sekolah) => {
     if (mapRef.current) {
@@ -70,9 +108,9 @@ export default function Map({ data }: { data: Sekolah[] }) {
 
   return (
     <div className="w-full h-full relative">
-      <SchoolSearch 
-        data={data} 
-        onSchoolSelect={handleSchoolSelect} 
+      <SchoolSearch
+        data={data}
+        onSchoolSelect={handleSchoolSelect}
         onSearchReset={handleSearchReset}
       />
       <LayerSwitcher currentLayer={mapLayer} onLayerChange={setMapLayer} />
@@ -95,27 +133,62 @@ export default function Map({ data }: { data: Sekolah[] }) {
         <TileLayer
           url={MAP_LAYERS[mapLayer].url}
           attribution={MAP_LAYERS[mapLayer].attribution}
-          {...(MAP_LAYERS[mapLayer].subdomains && { subdomains: MAP_LAYERS[mapLayer].subdomains })}
+          {...(MAP_LAYERS[mapLayer].subdomains && {
+            subdomains: MAP_LAYERS[mapLayer].subdomains,
+          })}
         />
-        {data.map((sekolah) => (
+        {data.map((sekolah) =>
           selectedSchool === null || selectedSchool.id === sekolah.id ? (
-            <Marker 
-              key={sekolah.id} 
+            <Marker
+              key={sekolah.id}
               position={[sekolah.lat, sekolah.lng]}
-              icon={selectedSchool?.id === sekolah.id ? redMarkerIcon : defaultIcon}
+              icon={
+                selectedSchool?.id === sekolah.id ? redMarkerIcon : defaultIcon
+              }
               eventHandlers={{
                 click: () => {
                   setSelectedSchool(sekolah);
                 },
                 popupclose: () => {
                   setSelectedSchool(null);
-                }
+                },
               }}
             >
               <SchoolPopup school={sekolah} />
             </Marker>
           ) : null
-        ))}
+        )}
+
+        <LocationControl onLocationUpdate={onUserLocationUpdate} />
+        <RoutingControl 
+          userLocation={userLocation} 
+          schools={data} 
+          origin={routeOrigin}
+          destination={routeDestination}
+          onRouteInfoUpdate={onRouteInfoUpdate}
+        />
+
+        {userLocation && (
+          <Marker position={userLocation} icon={locationIcon}>
+            <SchoolPopup
+              school={{
+                id: 0,
+                nama: "Your Location",
+                alamat: `${userLocation.lat.toFixed(
+                  6
+                )}, ${userLocation.lng.toFixed(6)}`,
+                npsn: "",
+                status: "",
+                bentuk_pendidikan: "",
+                akreditasi: "",
+                jumlah_guru: 0,
+                jumlah_murid: 0,
+                lat: userLocation.lat,
+                lng: userLocation.lng,
+              }}
+            />
+          </Marker>
+        )}
       </MapContainer>
     </div>
   );
