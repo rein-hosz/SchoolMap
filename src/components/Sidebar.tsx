@@ -3,6 +3,7 @@ import { Sekolah } from "@/types/school";
 import L from "leaflet";
 import RoutingSidebar from "./map/RoutingSidebar";
 import { FaRoute } from "react-icons/fa6";
+import { RouteInfo } from "./map/RoutingControl"; // Add this import for RouteInfo
 
 interface SidebarProps {
   isOpen: boolean;
