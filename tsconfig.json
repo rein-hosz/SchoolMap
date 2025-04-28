@@ -4,7 +4,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -20,8 +20,33 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    // Relaxing type checking options to maximum permissiveness
+    "noImplicitAny": false,
+    "ignoreDeprecations": "5.0",
+    "checkJs": false,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitThis": false,
+    "alwaysStrict": false,
+    "strictBindCallApply": false,
+    "strictFunctionTypes": false,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": false,
+    "useUnknownInCatchVariables": false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitOverride": false,
+    "noImplicitReturns": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/types/**/*.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

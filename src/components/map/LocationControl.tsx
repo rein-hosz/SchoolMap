@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useMap, Marker, Popup } from "react-leaflet";
+import { useMap } from "react-leaflet";
 import L from "leaflet";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoExpand, IoContract } from "react-icons/io5";
@@ -7,7 +7,7 @@ import { saveUserLocation } from "@/lib/location";
 import { useLocation } from "@/contexts/LocationContext";
 
 // Custom icon for user location
-const locationIcon = new L.Icon({
+const locationIcon = L.icon({
   iconUrl: "/marker/location.png",
   shadowUrl: "/leaflet/marker-shadow.png",
   iconSize: [32, 32],
@@ -36,6 +36,45 @@ export default function LocationControl({ onLocationUpdate }: LocationControlPro
     };
   }, []);
 
+  // Define fallbackToLeafletLocate outside of handleLocationClick to avoid the dependency issue
+  const fallbackToLeafletLocate = useCallback(() => {
+    // Remove any existing event handlers to prevent duplicates
+    map.off("locationfound");
+    map.off("locationerror");
+
+    // Add location found event handler
+    map.on("locationfound", (e: L.LocationEvent) => {
+      setIsLocating(false);
+      
+      // Save to context
+      setUserLocation(e.latlng);
+      
+      // Notify parent component
+      if (onLocationUpdate) {
+        onLocationUpdate(e.latlng);
+      }
+      
+      // Save to API in background
+      saveUserLocation(e.latlng).catch(error => {
+        console.error("Failed to save location to API:", error);
+      });
+    });
+
+    // Add location error handler
+    map.on("locationerror", (e: L.ErrorEvent) => {
+      setIsLocating(false);
+      console.error("Location error:", e.message);
+      alert("Could not find your location. Please make sure location services are enabled.");
+    });
+
+    // Use locate method to find user location
+    map.locate({
+      setView: true,
+      maxZoom: 16,
+      enableHighAccuracy: true,
+    });
+  }, [map, onLocationUpdate, setUserLocation]);
+
   const handleLocationClick = useCallback(() => {
     setIsLocating(true);
 
@@ -45,7 +84,7 @@ export default function LocationControl({ onLocationUpdate }: LocationControlPro
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const latLng = new L.LatLng(latitude, longitude);
+          const latLng = L.latLng(latitude, longitude);
           
           // Update state and map
           map.setView(latLng, 16);
@@ -67,7 +106,7 @@ export default function LocationControl({ onLocationUpdate }: LocationControlPro
             locationWatchId.current = navigator.geolocation.watchPosition(
               (watchPosition) => {
                 const { latitude, longitude } = watchPosition.coords;
-                const watchLatLng = new L.LatLng(latitude, longitude);
+                const watchLatLng = L.latLng(latitude, longitude);
                 
                 setUserLocation(watchLatLng);
                 
@@ -104,47 +143,7 @@ export default function LocationControl({ onLocationUpdate }: LocationControlPro
       // Fall back to Leaflet's locate method if geolocation is not available
       fallbackToLeafletLocate();
     }
-  }, [map, onLocationUpdate, setUserLocation]);
-
-  // Fallback to Leaflet's locate method
-  const fallbackToLeafletLocate = () => {
-    // Remove any existing event handlers to prevent duplicates
-    map.off("locationfound");
-    map.off("locationerror");
-
-    // Add location found event handler
-    map.on("locationfound", (e) => {
-      setIsLocating(false);
-      const { lat, lng } = e.latlng;
-      
-      // Save to context
-      setUserLocation(e.latlng);
-      
-      // Notify parent component
-      if (onLocationUpdate) {
-        onLocationUpdate(e.latlng);
-      }
-      
-      // Save to API in background
-      saveUserLocation(e.latlng).catch(error => {
-        console.error("Failed to save location to API:", error);
-      });
-    });
-
-    // Add location error handler
-    map.on("locationerror", (e) => {
-      setIsLocating(false);
-      console.error("Location error:", e.message);
-      alert("Could not find your location. Please make sure location services are enabled.");
-    });
-
-    // Use locate method to find user location
-    map.locate({
-      setView: true,
-      maxZoom: 16,
-      enableHighAccuracy: true,
-    });
-  };
+  }, [map, onLocationUpdate, setUserLocation, fallbackToLeafletLocate]);
 
   return (
     <div
