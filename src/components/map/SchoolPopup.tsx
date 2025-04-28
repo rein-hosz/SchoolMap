@@ -11,8 +11,8 @@ export default function SchoolPopup({ school }: SchoolPopupProps) {
   const schoolColor = getSchoolColor(school.bentuk_pendidikan);
 
   return (
-    <Popup className="rounded-xl min-w-[280px]">
-      <div className="text-sm font-sans -mx-3 -my-2">
+    <Popup>
+      <div className="text-sm font-sans -mx-3 -my-2 rounded-xl min-w-[280px]">
         <div className={`${schoolColor.base} p-3 -mt-2 -mx-2 rounded-t-lg relative`}>
           <div className="absolute top-0 right-0 px-2 py-1 text-[10px] font-medium bg-black/20 text-white rounded-bl-lg">
             {school.bentuk_pendidikan}
