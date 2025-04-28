@@ -10,6 +10,7 @@ import SchoolSearch from "./SchoolSearch";
 import LocationControl from "./LocationControl";
 import RoutingControl, { RouteInfo } from "./RoutingControl";
 import { useLocation } from "@/contexts/LocationContext";
+import LocationPopup from "./LocationPopup";
 
 // Create marker icons after import with proper type assertion
 const defaultIcon = L.icon({
@@ -40,6 +41,27 @@ const locationIcon = L.icon({
   iconAnchor: [16, 16],
   popupAnchor: [0, -16],
 } as any); // Use 'any' to bypass type checking for icon properties
+
+// Add origin and destination icons for routing
+const originIcon = L.icon({
+  iconUrl: "/marker/marker-icon-green.png",
+  iconRetinaUrl: "/marker/marker-icon-2x-green.png",
+  shadowUrl: "/leaflet/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+} as any);
+
+const destinationIcon = L.icon({
+  iconUrl: "/marker/marker-icon-green.png",
+  iconRetinaUrl: "/marker/marker-icon-2x-green.png",
+  shadowUrl: "/leaflet/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+} as any);
 
 // Add MapController component to handle map reference
 function MapController({ map }: { map: L.Map | null }) {
@@ -76,6 +98,9 @@ export default function Map({
   const [selectedSchool, setSelectedSchool] = useState<Sekolah | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const { userLocation } = useLocation();
+
+  // Determine if we're in routing mode
+  const isRoutingActive = routeOrigin !== null && routeDestination !== null;
 
   useEffect(() => {
     // Initialize leaflet
@@ -121,6 +146,38 @@ export default function Map({
     return layer.subdomains ? { subdomains: layer.subdomains } : {};
   };
 
+  // Helper function to determine if a school should be shown
+  const shouldShowSchool = (school: Sekolah) => {
+    // If routing is not active, show all schools
+    if (!isRoutingActive) {
+      return true;
+    }
+
+    // If routing is active, only show origin and destination schools
+    if (routeOrigin === school.id || routeDestination === school.id) {
+      return true;
+    }
+
+    return false;
+  };
+
+  // Helper function to get the appropriate icon for a school
+  const getSchoolIcon = (school: Sekolah) => {
+    if (selectedSchool?.id === school.id) {
+      return redMarkerIcon;
+    }
+    
+    if (routeOrigin === school.id) {
+      return originIcon;
+    }
+    
+    if (routeDestination === school.id) {
+      return destinationIcon;
+    }
+    
+    return defaultIcon;
+  };
+
   return (
     <div className="w-full h-full relative">
       <SchoolSearch
@@ -157,27 +214,23 @@ export default function Map({
           {...getSubdomains(MAP_LAYERS[mapLayer])}
         />
 
-        {data.map((sekolah) =>
-          selectedSchool === null || selectedSchool.id === sekolah.id ? (
-            <Marker
-              key={sekolah.id}
-              position={[sekolah.lat, sekolah.lng]}
-              icon={
-                selectedSchool?.id === sekolah.id ? redMarkerIcon : defaultIcon
-              }
-              eventHandlers={{
-                click: () => {
-                  setSelectedSchool(sekolah);
-                },
-                popupclose: () => {
-                  setSelectedSchool(null);
-                },
-              }}
-            >
-              <SchoolPopup school={sekolah} />
-            </Marker>
-          ) : null
-        )}
+        {data.filter(shouldShowSchool).map((sekolah) => (
+          <Marker
+            key={sekolah.id}
+            position={[sekolah.lat, sekolah.lng]}
+            icon={getSchoolIcon(sekolah)}
+            eventHandlers={{
+              click: () => {
+                setSelectedSchool(sekolah);
+              },
+              popupclose: () => {
+                setSelectedSchool(null);
+              },
+            }}
+          >
+            <SchoolPopup school={sekolah} />
+          </Marker>
+        ))}
 
         <LocationControl onLocationUpdate={onUserLocationUpdate} />
         <RoutingControl
@@ -188,25 +241,12 @@ export default function Map({
           onRouteInfoUpdate={onRouteInfoUpdate}
         />
 
-        {userLocation && (
-          <Marker position={userLocation} icon={locationIcon}>
-            <SchoolPopup
-              school={{
-                id: 0,
-                nama: "Your Location",
-                alamat: `${userLocation.lat.toFixed(
-                  6
-                )}, ${userLocation.lng.toFixed(6)}`,
-                npsn: "",
-                status: "",
-                bentuk_pendidikan: "",
-                akreditasi: "",
-                jumlah_guru: 0,
-                jumlah_murid: 0,
-                lat: userLocation.lat,
-                lng: userLocation.lng,
-              }}
-            />
+        {userLocation && (!isRoutingActive || routeOrigin === "user") && (
+          <Marker 
+            position={userLocation} 
+            icon={routeOrigin === "user" ? originIcon : locationIcon}
+          >
+            <LocationPopup location={userLocation} />
           </Marker>
         )}
       </MapContainer>
