@@ -141,24 +141,27 @@ export default function Map({
   const defaultCenter: [number, number] = [3.5952, 98.6722];
 
   // Helper function to extract subdomains if they exist
-  const getSubdomains = (layer: typeof MAP_LAYERS[keyof typeof MAP_LAYERS]) => {
+  const getSubdomains = (
+    layer: (typeof MAP_LAYERS)[keyof typeof MAP_LAYERS]
+  ) => {
     // @ts-ignore - Ignore TypeScript errors for subdomains property
     return layer.subdomains ? { subdomains: layer.subdomains } : {};
   };
 
   // Helper function to determine if a school should be shown
   const shouldShowSchool = (school: Sekolah) => {
-    // If routing is not active, show all schools
-    if (!isRoutingActive) {
-      return true;
+    // If a school is selected, only show that school
+    if (selectedSchool !== null) {
+      return selectedSchool.id === school.id;
     }
 
     // If routing is active, only show origin and destination schools
-    if (routeOrigin === school.id || routeDestination === school.id) {
-      return true;
+    if (isRoutingActive) {
+      return routeOrigin === school.id || routeDestination === school.id;
     }
 
-    return false;
+    // Otherwise, show all schools
+    return true;
   };
 
   // Helper function to get the appropriate icon for a school
@@ -166,15 +169,15 @@ export default function Map({
     if (selectedSchool?.id === school.id) {
       return redMarkerIcon;
     }
-    
+
     if (routeOrigin === school.id) {
       return originIcon;
     }
-    
+
     if (routeDestination === school.id) {
       return destinationIcon;
     }
-    
+
     return defaultIcon;
   };
 
@@ -186,9 +189,9 @@ export default function Map({
         onSearchReset={handleSearchReset}
       />
       {/* @ts-ignore - Ignore TypeScript errors for LayerSwitcher props */}
-      <LayerSwitcher 
-        currentLayer={mapLayer} 
-        onLayerChange={(layer: keyof typeof MAP_LAYERS) => setMapLayer(layer)} 
+      <LayerSwitcher
+        currentLayer={mapLayer}
+        onLayerChange={(layer: keyof typeof MAP_LAYERS) => setMapLayer(layer)}
       />
 
       <MapContainer
@@ -242,8 +245,8 @@ export default function Map({
         />
 
         {userLocation && (!isRoutingActive || routeOrigin === "user") && (
-          <Marker 
-            position={userLocation} 
+          <Marker
+            position={userLocation}
             icon={routeOrigin === "user" ? originIcon : locationIcon}
           >
             <LocationPopup location={userLocation} />
