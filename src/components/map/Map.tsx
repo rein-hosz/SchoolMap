@@ -8,6 +8,7 @@ import LayerSwitcher, { MAP_LAYERS } from "./LayerSwitcher";
 import SchoolPopup from "./SchoolPopup";
 import SchoolSearch from "./SchoolSearch";
 import LocationControl from "./LocationControl";
+import PolygonControl from "./PolygonControl";
 import RoutingControl, { RouteInfo } from "./RoutingControl";
 import { useLocation } from "@/contexts/LocationContext";
 import LocationPopup from "./LocationPopup";
@@ -235,6 +236,7 @@ export default function Map({
           </Marker>
         ))}
 
+        <PolygonControl />
         <LocationControl onLocationUpdate={onUserLocationUpdate} />
         <RoutingControl
           userLocation={userLocation}
