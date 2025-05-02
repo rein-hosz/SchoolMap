@@ -6,7 +6,7 @@ import { IoClose } from "react-icons/io5";
 interface SchoolSearchProps {
   data: Sekolah[];
   onSchoolSelect: (school: Sekolah) => void;
-  onSearchReset: () => void; // Add this prop
+  onSearchReset: () => void;
 }
 
 export default function SchoolSearch({
@@ -48,7 +48,7 @@ export default function SchoolSearch({
   };
 
   return (
-    <div className="absolute top-4 left-4 z-[1000] w-96">
+    <div className="absolute top-4 left-4 z-[1000] w-[450px] max-w-[90vw]">
       <div className="relative">
         <div className="relative group">
           <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400/80 w-5 h-5 pointer-events-none" />
@@ -79,16 +79,16 @@ export default function SchoolSearch({
           >
             {filteredSchools.map((school) => (
               <button
-                key={school.uuid} // Changed from school.id
+                key={school.uuid}
                 onClick={() => handleSchoolSelect(school)}
                 className="w-full px-5 py-3.5 text-left hover:bg-blue-50/50 transition-colors group"
               >
                 <div className="font-medium text-[15px] text-neutral-800 group-hover:text-blue-700">
                   {school.nama}
                 </div>
-                <div className="text-sm text-neutral-500 group-hover:text-neutral-600 truncate mt-1 flex items-center gap-2">
-                  <FiSearch className="w-3.5 h-3.5 text-neutral-400" />
-                  {school.alamat}
+                <div className="text-sm text-neutral-500 group-hover:text-neutral-600 mt-1 flex items-start gap-2">
+                  <FiSearch className="w-3.5 h-3.5 text-neutral-400 mt-0.5 flex-shrink-0" />
+                  <span className="break-words">{school.alamat}</span>
                 </div>
               </button>
             ))}

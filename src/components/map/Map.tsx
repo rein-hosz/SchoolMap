@@ -24,6 +24,37 @@ const defaultIcon = L.icon({
   shadowSize: [41, 41],
 } as any); // Use 'any' to bypass type checking for icon properties
 
+// Add type-specific school icons
+const iconSD = L.icon({
+  iconUrl: "/marker/marker-icon-blue.png",
+  iconRetinaUrl: "/marker/marker-icon-2x-blue.png",
+  shadowUrl: "/leaflet/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+} as any);
+
+const iconSMP = L.icon({
+  iconUrl: "/marker/marker-icon-green.png",
+  iconRetinaUrl: "/marker/marker-icon-2x-green.png",
+  shadowUrl: "/leaflet/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+} as any);
+
+const iconSMA = L.icon({
+  iconUrl: "/marker/marker-icon-violet.png",
+  iconRetinaUrl: "/marker/marker-icon-2x-violet.png",
+  shadowUrl: "/leaflet/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+} as any);
+
 const redMarkerIcon = L.icon({
   iconUrl: "/marker/marker-icon-red.png",
   iconRetinaUrl: "/marker/marker-icon-2x-red.png",
@@ -32,7 +63,7 @@ const redMarkerIcon = L.icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
-} as any); // Use 'any' to bypass type checking for icon properties
+} as any);
 
 // Add location icon for user location marker
 const locationIcon = L.icon({
@@ -178,6 +209,11 @@ export default function Map({
     if (routeDestination === school.uuid) {
       return destinationIcon;
     }
+
+    // Use type-specific icons based on school type
+    if (school.bentuk_pendidikan?.includes("SD")) return iconSD;
+    if (school.bentuk_pendidikan?.includes("SMP")) return iconSMP;
+    if (school.bentuk_pendidikan?.includes("SMA")) return iconSMA;
 
     return defaultIcon;
   };
