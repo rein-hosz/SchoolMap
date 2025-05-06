@@ -14,21 +14,31 @@ export default function PolygonControl({ onToggle }: PolygonControlProps) {
   const [isActive, setIsActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [polygonLayer, setPolygonLayer] = useState<L.GeoJSON | null>(null);
-  const [useDistinctColors, setUseDistinctColors] = useState(false);
+  const [useDistinctColors, setUseDistinctColors] = useState(true); // Set default to true
   const map = useMap();
 
-  // Generate a color based on the district name for consistent colors
+  // Define fixed colors for each kelurahan to ensure uniqueness
+  const kelurahanColors = {
+    "Tegal Sari Mandala III": "#FF5733", // Orange-red
+    "Tegal Sari Mandala II": "#2ECC71", // Emerald green
+    "Tegal Sari Mandala I": "#3498DB", // Bright blue
+    "Denai": "#9B59B6", // Purple
+    "Binjai": "#F1C40F", // Yellow
+    "Medan Tenggara": "#E67E22", // Orange
+    // Fallback colors if needed
+    "default1": "#16A085", // Green-teal
+    "default2": "#8E44AD", // Deep purple
+  };
+
+  // Modified color generator that prioritizes fixed colors
   const getColorForName = useCallback((name: string) => {
-    // More distinct color options with better contrast
+    // First check if we have a predefined color for this kelurahan
+    if (kelurahanColors[name]) {
+      return kelurahanColors[name];
+    }
+    
+    // If not found, use the hash method as fallback
     const colorOptions = [
-      "#FF5733", // Orange-red
-      "#2ECC71", // Emerald green
-      "#3498DB", // Bright blue
-      "#9B59B6", // Purple
-      "#F1C40F", // Yellow
-      "#E67E22", // Orange
-      "#16A085", // Green-teal
-      "#8E44AD", // Deep purple
       "#E74C3C", // Bright red
       "#1ABC9C", // Turquoise
       "#D35400", // Pumpkin
@@ -38,7 +48,6 @@ export default function PolygonControl({ onToggle }: PolygonControlProps) {
       "#7D3C98", // Dark purple
     ];
 
-    // Simple hash function to get a consistent index for the same name
     const hashCode = name.split("").reduce((hash, char) => {
       return char.charCodeAt(0) + ((hash << 5) - hash);
     }, 0);
@@ -66,6 +75,9 @@ export default function PolygonControl({ onToggle }: PolygonControlProps) {
       }
 
       const data = await response.json();
+      
+      // Log the unique kelurahan names for debugging
+      console.log("Kelurahan names:", data.map((item: any) => item.kelurahan));
 
       // Create a new GeoJSON layer
       const layer = L.geoJSON(
@@ -85,11 +97,11 @@ export default function PolygonControl({ onToggle }: PolygonControlProps) {
               color: "#333", // Border color
               weight: 2,
               opacity: 0.8,
-              fillOpacity: 0.4,
+              fillOpacity: 0.5, // Slightly increased for better visibility
             };
 
-            // If distinct colors are enabled, use unique colors per district
-            if (useDistinctColors && feature?.properties?.name) {
+            // If distinct colors are enabled or by default, use unique colors per district
+            if ((useDistinctColors || true) && feature?.properties?.name) {
               return {
                 ...baseStyle,
                 fillColor: getColorForName(feature.properties.name),
@@ -105,11 +117,16 @@ export default function PolygonControl({ onToggle }: PolygonControlProps) {
           onEachFeature: (feature, layer) => {
             if (feature.properties) {
               // Add a label on hover
-              layer.bindTooltip(`${feature.properties.name}`, {
+              const tooltipContent = `
+                <div class="font-bold">${feature.properties.name}</div>
+                <div class="text-xs">Kecamatan ${feature.properties.kecamatan}</div>
+              `;
+              
+              layer.bindTooltip(tooltipContent, {
                 permanent: false,
                 direction: "center",
                 className:
-                  "bg-black/80 text-white border-0 rounded-md shadow-lg text-sm px-2 py-1",
+                  "bg-black/80 text-white border-0 rounded-md shadow-lg text-sm px-3 py-2",
               });
 
               // Make polygons interactive with click event
@@ -218,7 +235,7 @@ export default function PolygonControl({ onToggle }: PolygonControlProps) {
                   color: "#333", // Border color
                   weight: 2,
                   opacity: 0.8,
-                  fillOpacity: 0.4,
+                  fillOpacity: 0.5, // Increased for better visibility
                 };
 
                 // Use the new color value directly instead of the state
@@ -237,12 +254,17 @@ export default function PolygonControl({ onToggle }: PolygonControlProps) {
               },
               onEachFeature: (feature, layer) => {
                 if (feature.properties) {
-                  // Add a label on hover
-                  layer.bindTooltip(`${feature.properties.name}`, {
+                  // Add a label on hover with more information
+                  const tooltipContent = `
+                    <div class="font-bold">${feature.properties.name}</div>
+                    <div class="text-xs">Kecamatan ${feature.properties.kecamatan}</div>
+                  `;
+                  
+                  layer.bindTooltip(tooltipContent, {
                     permanent: false,
                     direction: "center",
                     className:
-                      "bg-black/80 text-white border-0 rounded-md shadow-lg text-sm px-2 py-1",
+                      "bg-black/80 text-white border-0 rounded-md shadow-lg text-sm px-3 py-2",
                   });
 
                   // Make polygons interactive with click event
