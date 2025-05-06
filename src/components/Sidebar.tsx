@@ -3,7 +3,7 @@ import { Sekolah } from "@/types/school";
 import L from "leaflet";
 import RoutingSidebar from "./map/RoutingSidebar";
 import { FaRoute } from "react-icons/fa6";
-import { RouteInfo } from "./map/RoutingControl"; // Add this import for RouteInfo
+import { RouteInfo } from "./map/RoutingControl";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -18,6 +18,9 @@ interface SidebarProps {
   ) => void;
   onClearRoute: () => void;
   routeInfo?: RouteInfo | null;
+  // Add new prop for school filtering
+  onSchoolTypeFilter: (type: string | null) => void;
+  activeFilter: string | null;
 }
 
 export default function Sidebar({
@@ -30,6 +33,8 @@ export default function Sidebar({
   onCreateRoute,
   onClearRoute,
   routeInfo,
+  onSchoolTypeFilter,
+  activeFilter,
 }: SidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [currentTab, setCurrentTab] = useState<"statistics" | "routing">(
@@ -112,39 +117,71 @@ export default function Sidebar({
             </h2>
 
             <div className="grid gap-3">
-              <div className="bg-neutral-50 rounded-lg p-3 border border-neutral-200">
+              {/* SD Card - Clickable */}
+              <button
+                onClick={() => onSchoolTypeFilter("SD")}
+                className={`text-left w-full ${
+                  activeFilter === "SD" 
+                  ? "ring-2 ring-blue-400 bg-blue-50" 
+                  : "bg-neutral-50 hover:bg-blue-50/50"
+                } rounded-lg p-3 border border-neutral-200 transition-all duration-200`}
+              >
                 <div className="text-xs text-neutral-500">
                   Sekolah Dasar (SD)
                 </div>
                 <div className="text-2xl font-bold text-blue-600 mt-1">
                   {schoolCounts.SD}
                 </div>
-              </div>
+              </button>
 
-              <div className="bg-neutral-50 rounded-lg p-3 border border-neutral-200">
+              {/* SMP Card - Clickable */}
+              <button
+                onClick={() => onSchoolTypeFilter("SMP")}
+                className={`text-left w-full ${
+                  activeFilter === "SMP" 
+                  ? "ring-2 ring-emerald-400 bg-emerald-50" 
+                  : "bg-neutral-50 hover:bg-emerald-50/50"
+                } rounded-lg p-3 border border-neutral-200 transition-all duration-200`}
+              >
                 <div className="text-xs text-neutral-500">
                   Sekolah Menengah Pertama (SMP)
                 </div>
                 <div className="text-2xl font-bold text-emerald-600 mt-1">
                   {schoolCounts.SMP}
                 </div>
-              </div>
+              </button>
 
-              <div className="bg-neutral-50 rounded-lg p-3 border border-neutral-200">
+              {/* SMA Card - Clickable */}
+              <button
+                onClick={() => onSchoolTypeFilter("SMA")}
+                className={`text-left w-full ${
+                  activeFilter === "SMA" 
+                  ? "ring-2 ring-purple-400 bg-purple-50" 
+                  : "bg-neutral-50 hover:bg-purple-50/50"
+                } rounded-lg p-3 border border-neutral-200 transition-all duration-200`}
+              >
                 <div className="text-xs text-neutral-500">
                   Sekolah Menengah Atas (SMA)
                 </div>
                 <div className="text-2xl font-bold text-purple-600 mt-1">
                   {schoolCounts.SMA}
                 </div>
-              </div>
+              </button>
 
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-200">
+              {/* Total Schools Card - Clickable to reset filter */}
+              <button
+                onClick={() => onSchoolTypeFilter(null)}
+                className={`text-left w-full ${
+                  activeFilter === null 
+                  ? "ring-2 ring-blue-400 bg-gradient-to-r from-blue-50 to-indigo-50" 
+                  : "bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100"
+                } rounded-lg p-3 border border-blue-200 transition-all duration-200`}
+              >
                 <div className="text-xs text-blue-600">Total Sekolah</div>
                 <div className="text-3xl font-bold text-blue-700 mt-1">
                   {data.length}
                 </div>
-              </div>
+              </button>
             </div>
           </div>
 
