@@ -115,6 +115,8 @@ interface MapProps {
   routeOrigin?: "user" | string | null; // Changed from number to string
   routeDestination?: string | null; // Changed from number to string
   onRouteInfoUpdate?: (routeInfo: RouteInfo | null) => void;
+  // Add new prop for filtering
+  schoolTypeFilter: string | null;
 }
 
 export default function Map({
@@ -124,6 +126,7 @@ export default function Map({
   routeOrigin,
   routeDestination,
   onRouteInfoUpdate,
+  schoolTypeFilter
 }: MapProps) {
   // Use type assertion for MapLayerType to fix the useState type issue
   const [mapLayer, setMapLayer] = useState<keyof typeof MAP_LAYERS>("osm");
@@ -133,6 +136,11 @@ export default function Map({
 
   // Determine if we're in routing mode
   const isRoutingActive = routeOrigin !== null && routeDestination !== null;
+
+  // Filter schools based on schoolTypeFilter
+  const filteredSchools = schoolTypeFilter
+    ? data.filter(school => school.bentuk_pendidikan === schoolTypeFilter)
+    : data;
 
   useEffect(() => {
     // Initialize leaflet
@@ -182,6 +190,11 @@ export default function Map({
 
   // Helper function to determine if a school should be shown
   const shouldShowSchool = (school: Sekolah) => {
+    // If a school type filter is active, only show schools of that type
+    if (schoolTypeFilter && school.bentuk_pendidikan !== schoolTypeFilter) {
+      return false;
+    }
+    
     // If a school is selected, only show that school
     if (selectedSchool !== null) {
       return selectedSchool.uuid === school.uuid;
@@ -192,7 +205,7 @@ export default function Map({
       return routeOrigin === school.uuid || routeDestination === school.uuid;
     }
 
-    // Otherwise, show all schools
+    // Otherwise, show all schools (that match the current type filter if any)
     return true;
   };
 
@@ -221,7 +234,7 @@ export default function Map({
   return (
     <div className="w-full h-full relative">
       <SchoolSearch
-        data={data}
+        data={filteredSchools} // Use filtered schools for search
         onSchoolSelect={handleSchoolSelect}
         onSearchReset={handleSearchReset}
       />

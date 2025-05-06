@@ -40,6 +40,7 @@ export default function HomePage() {
   const [routeOrigin, setRouteOrigin] = useState<"user" | string | null>(null);
   const [routeDestination, setRouteDestination] = useState<string | null>(null);
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
+  const [schoolTypeFilter, setSchoolTypeFilter] = useState<string | null>(null);
 
   // Add data fetching
   useEffect(() => {
@@ -130,6 +131,8 @@ export default function HomePage() {
           onClearRoute={handleClearRoute}
           activeTab={activeTab}
           routeInfo={routeInfo}
+          onSchoolTypeFilter={setSchoolTypeFilter}
+          activeFilter={schoolTypeFilter}
         />
 
         <div className="absolute inset-0">
@@ -140,6 +143,7 @@ export default function HomePage() {
             routeOrigin={routeOrigin}
             routeDestination={routeDestination}
             onRouteInfoUpdate={handleRouteInfoUpdate}
+            schoolTypeFilter={schoolTypeFilter}
           />
         </div>
       </main>
