@@ -1,5 +1,5 @@
-export type Sekolah = {
-  uuid: string; // Changed from id: number
+export interface Sekolah {
+  uuid: string;
   nama: string;
   npsn: string;
   alamat: string;
@@ -8,9 +8,11 @@ export type Sekolah = {
   akreditasi: string;
   jumlah_guru: number;
   jumlah_murid: number;
-  lat: number;
   lng: number;
-};
+  lat: number;
+  kelurahan_id: number; // Add this field
+  kelurahan_nama?: string; // Add this optional field
+}
 
 export const SCHOOL_COLORS = {
   SD: {

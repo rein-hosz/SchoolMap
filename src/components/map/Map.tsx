@@ -117,6 +117,7 @@ interface MapProps {
   onRouteInfoUpdate?: (routeInfo: RouteInfo | null) => void;
   // Add new prop for filtering
   schoolTypeFilter: string | null;
+  kelurahanFilter?: number | null;
 }
 
 export default function Map({
@@ -126,7 +127,8 @@ export default function Map({
   routeOrigin,
   routeDestination,
   onRouteInfoUpdate,
-  schoolTypeFilter
+  schoolTypeFilter,
+  kelurahanFilter,
 }: MapProps) {
   // Use type assertion for MapLayerType to fix the useState type issue
   const [mapLayer, setMapLayer] = useState<keyof typeof MAP_LAYERS>("osm");
@@ -139,7 +141,7 @@ export default function Map({
 
   // Filter schools based on schoolTypeFilter
   const filteredSchools = schoolTypeFilter
-    ? data.filter(school => school.bentuk_pendidikan === schoolTypeFilter)
+    ? data.filter((school) => school.bentuk_pendidikan === schoolTypeFilter)
     : data;
 
   useEffect(() => {
@@ -190,11 +192,16 @@ export default function Map({
 
   // Helper function to determine if a school should be shown
   const shouldShowSchool = (school: Sekolah) => {
+    // First, check kelurahan filter if active
+    if (kelurahanFilter && school.kelurahan_id !== kelurahanFilter) {
+      return false;
+    }
+
     // If a school type filter is active, only show schools of that type
     if (schoolTypeFilter && school.bentuk_pendidikan !== schoolTypeFilter) {
       return false;
     }
-    
+
     // If a school is selected, only show that school
     if (selectedSchool !== null) {
       return selectedSchool.uuid === school.uuid;
