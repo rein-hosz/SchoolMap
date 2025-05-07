@@ -8,15 +8,13 @@ import {
   FaArrowLeft,
   FaArrowUp,
 } from "react-icons/fa6";
-import { IoClose } from "react-icons/io5";
 import L from "leaflet";
 import { RouteInfo } from "./RoutingControl";
-import RouteInformationPanel from "./RouteInformationPanel";
 
 interface RoutingSidebarProps {
   schools: Sekolah[];
   userLocation: L.LatLng | null;
-  onClose: () => void;
+  onClose: () => void; // Keep for compatibility
   onCreateRoute: (
     origin: "user" | string | null,
     destination: string | null
@@ -47,6 +45,7 @@ export default function RoutingSidebar({
       setSelectedOrigin("user");
     }
   }, [userLocation, selectedOrigin]);
+
   const [hasSessionLocation, setHasSessionLocation] = useState(false);
 
   // Check for session location
@@ -201,20 +200,13 @@ export default function RoutingSidebar({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
+      {/* Header - removed the close button */}
       <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-4 text-white">
         <div className="flex justify-between items-center">
           <h3 className="font-bold text-lg flex items-center gap-2">
             <FaRoute className="w-4 h-4" />
             Route Planner
           </h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 hover:bg-white/20 rounded-full transition-colors"
-            aria-label="Close panel"
-          >
-            <IoClose className="w-5 h-5 text-white" />
-          </button>
         </div>
         <p className="text-white/80 text-xs mt-1">
           Find the best route to your destination

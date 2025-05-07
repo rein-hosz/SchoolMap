@@ -76,8 +76,8 @@ const locationIcon = L.icon({
 
 // Add origin and destination icons for routing
 const originIcon = L.icon({
-  iconUrl: "/marker/marker-icon-green.png",
-  iconRetinaUrl: "/marker/marker-icon-2x-green.png",
+  iconUrl: "/marker/marker-icon-yellow.png",
+  iconRetinaUrl: "/marker/marker-icon-2x-yellow.png",
   shadowUrl: "/leaflet/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
@@ -86,8 +86,8 @@ const originIcon = L.icon({
 } as any);
 
 const destinationIcon = L.icon({
-  iconUrl: "/marker/marker-icon-green.png",
-  iconRetinaUrl: "/marker/marker-icon-2x-green.png",
+  iconUrl: "/marker/marker-icon-yellow.png",
+  iconRetinaUrl: "/marker/marker-icon-2x-yellow.png",
   shadowUrl: "/leaflet/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],

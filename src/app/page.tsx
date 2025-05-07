@@ -93,6 +93,23 @@ export default function HomePage() {
     setShowSidebar(true);
   };
 
+  // Handle tab change without closing the sidebar
+  const handleTabChange = useCallback((tab: "statistics" | "routing") => {
+    setActiveTab(tab);
+  }, []);
+
+  // Close sidebar only when clicking outside the sidebar and navigation buttons
+  const handleSidebarClose = useCallback((event: MouseEvent) => {
+    // Check if the click was on the statistics or routing buttons
+    const target = event.target as HTMLElement;
+    const isNavButton = target.closest('[data-nav-button="true"]');
+
+    // Only close if not clicking on the navigation buttons
+    if (!isNavButton) {
+      setShowSidebar(false);
+    }
+  }, []);
+
   return (
     <DynamicLocationProvider>
       <main className="h-screen w-screen overflow-hidden relative bg-neutral-950">
@@ -104,26 +121,50 @@ export default function HomePage() {
         >
           <button
             onClick={() => openSidebar("statistics")}
-            className="bg-white/90 backdrop-blur-md p-3 rounded-lg shadow-lg border border-neutral-200 transition-all duration-300 
-              hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10"
+            data-nav-button="true"
+            className={`bg-white/90 backdrop-blur-md p-3 rounded-lg shadow-lg border transition-all duration-300 
+              hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10
+              ${
+                activeTab === "statistics" && showSidebar
+                  ? "border-blue-500 ring-2 ring-blue-300"
+                  : "border-neutral-200"
+              }`}
             aria-label="School Statistics"
           >
-            <FaChartBar className="w-5 h-5 text-neutral-900" />
+            <FaChartBar
+              className={`w-5 h-5 ${
+                activeTab === "statistics" && showSidebar
+                  ? "text-blue-600"
+                  : "text-neutral-900"
+              }`}
+            />
           </button>
 
           <button
             onClick={() => openSidebar("routing")}
-            className="bg-white/90 backdrop-blur-md p-3 rounded-lg shadow-lg border border-neutral-200 transition-all duration-300 
-              hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10"
+            data-nav-button="true"
+            className={`bg-white/90 backdrop-blur-md p-3 rounded-lg shadow-lg border transition-all duration-300 
+              hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10
+              ${
+                activeTab === "routing" && showSidebar
+                  ? "border-indigo-500 ring-2 ring-indigo-300"
+                  : "border-neutral-200"
+              }`}
             aria-label="Routing Control"
           >
-            <FaRoute className="w-5 h-5 text-neutral-900" />
+            <FaRoute
+              className={`w-5 h-5 ${
+                activeTab === "routing" && showSidebar
+                  ? "text-indigo-600"
+                  : "text-neutral-900"
+              }`}
+            />
           </button>
         </div>
 
         <Sidebar
           isOpen={showSidebar}
-          onClose={() => setShowSidebar(false)}
+          onClose={handleSidebarClose}
           data={sekolahData}
           isLoading={isLoading}
           userLocation={userLocation}
@@ -133,6 +174,7 @@ export default function HomePage() {
           routeInfo={routeInfo}
           onSchoolTypeFilter={setSchoolTypeFilter}
           activeFilter={schoolTypeFilter}
+          onTabChange={handleTabChange}
         />
 
         <div className="absolute inset-0">

@@ -7,7 +7,7 @@ import { RouteInfo } from "./map/RoutingControl";
 
 interface SidebarProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (event: MouseEvent) => void;
   data: Sekolah[];
   isLoading: boolean;
   userLocation: L.LatLng | null;
@@ -18,9 +18,9 @@ interface SidebarProps {
   ) => void;
   onClearRoute: () => void;
   routeInfo?: RouteInfo | null;
-  // Add new prop for school filtering
   onSchoolTypeFilter: (type: string | null) => void;
   activeFilter: string | null;
+  onTabChange: (tab: "statistics" | "routing") => void;
 }
 
 export default function Sidebar({
@@ -35,6 +35,7 @@ export default function Sidebar({
   routeInfo,
   onSchoolTypeFilter,
   activeFilter,
+  onTabChange,
 }: SidebarProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const [currentTab, setCurrentTab] = useState<"statistics" | "routing">(
@@ -55,7 +56,7 @@ export default function Sidebar({
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node)
       ) {
-        onClose();
+        onClose(event);
       }
     };
 
@@ -85,7 +86,7 @@ export default function Sidebar({
         <RoutingSidebar
           schools={data}
           userLocation={userLocation}
-          onClose={() => setCurrentTab("statistics")}
+          onClose={() => {}} // Empty function since we no longer need close functionality
           onCreateRoute={onCreateRoute}
           onClearRoute={onClearRoute}
           routeInfo={routeInfo}
@@ -121,10 +122,11 @@ export default function Sidebar({
               <button
                 onClick={() => onSchoolTypeFilter("SD")}
                 className={`text-left w-full ${
-                  activeFilter === "SD" 
-                  ? "ring-2 ring-blue-400 bg-blue-50" 
-                  : "bg-neutral-50 hover:bg-blue-50/50"
+                  activeFilter === "SD"
+                    ? "ring-2 ring-blue-400 bg-blue-50"
+                    : "bg-neutral-50 hover:bg-blue-50/50"
                 } rounded-lg p-3 border border-neutral-200 transition-all duration-200`}
+                data-nav-button="true"
               >
                 <div className="text-xs text-neutral-500">
                   Sekolah Dasar (SD)
@@ -138,10 +140,11 @@ export default function Sidebar({
               <button
                 onClick={() => onSchoolTypeFilter("SMP")}
                 className={`text-left w-full ${
-                  activeFilter === "SMP" 
-                  ? "ring-2 ring-emerald-400 bg-emerald-50" 
-                  : "bg-neutral-50 hover:bg-emerald-50/50"
+                  activeFilter === "SMP"
+                    ? "ring-2 ring-emerald-400 bg-emerald-50"
+                    : "bg-neutral-50 hover:bg-emerald-50/50"
                 } rounded-lg p-3 border border-neutral-200 transition-all duration-200`}
+                data-nav-button="true"
               >
                 <div className="text-xs text-neutral-500">
                   Sekolah Menengah Pertama (SMP)
@@ -155,10 +158,11 @@ export default function Sidebar({
               <button
                 onClick={() => onSchoolTypeFilter("SMA")}
                 className={`text-left w-full ${
-                  activeFilter === "SMA" 
-                  ? "ring-2 ring-purple-400 bg-purple-50" 
-                  : "bg-neutral-50 hover:bg-purple-50/50"
+                  activeFilter === "SMA"
+                    ? "ring-2 ring-purple-400 bg-purple-50"
+                    : "bg-neutral-50 hover:bg-purple-50/50"
                 } rounded-lg p-3 border border-neutral-200 transition-all duration-200`}
+                data-nav-button="true"
               >
                 <div className="text-xs text-neutral-500">
                   Sekolah Menengah Atas (SMA)
@@ -172,10 +176,11 @@ export default function Sidebar({
               <button
                 onClick={() => onSchoolTypeFilter(null)}
                 className={`text-left w-full ${
-                  activeFilter === null 
-                  ? "ring-2 ring-blue-400 bg-gradient-to-r from-blue-50 to-indigo-50" 
-                  : "bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100"
+                  activeFilter === null
+                    ? "ring-2 ring-blue-400 bg-gradient-to-r from-blue-50 to-indigo-50"
+                    : "bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100"
                 } rounded-lg p-3 border border-blue-200 transition-all duration-200`}
+                data-nav-button="true"
               >
                 <div className="text-xs text-blue-600">Total Sekolah</div>
                 <div className="text-3xl font-bold text-blue-700 mt-1">
@@ -191,15 +196,6 @@ export default function Sidebar({
               Memuat data...
             </div>
           )}
-
-          {/* Routing Button */}
-          <button
-            onClick={() => setCurrentTab("routing")}
-            className="w-full bg-gradient-to-r from-indigo-600 to-blue-700 hover:to-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-4"
-          >
-            <FaRoute className="w-4 h-4" />
-            Open Route Planner
-          </button>
         </div>
       )}
     </div>
