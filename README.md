@@ -1,8 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# School Map App
+
+A comprehensive web application for visualizing and interacting with school data on a map. This application allows users to view school locations, access detailed information about each school, get directions to schools, and analyze school distribution statistics across different administrative areas.
+
+![School Map App Screenshot](public/logo.svg)
+
+## Features
+
+- **Interactive School Map**: View all schools on a dynamic, interactive map with custom markers for different school types (SD, SMP, SMA)
+- **School Search**: Find schools by name or address with real-time filtering
+- **Detailed School Information**: View comprehensive details about each school including:
+  - Name, NPSN (National School ID), and address
+  - Accreditation status with color-coding
+  - School type (SD/SMP/SMA)
+  - Number of teachers and students
+- **Navigation Features**:
+  - Get directions from your current location to any school
+  - Calculate routes between schools
+  - View detailed step-by-step navigation instructions
+  - Distance and estimated travel time calculations
+- **Current Location**: Find and use your current location for navigation
+- **Statistical Analysis**:
+  - View school distribution statistics by kelurahan (administrative area)
+  - Filter schools by type (SD, SMP, SMA)
+  - Analyze school density across different regions
+- **Multiple Map Layers**: Switch between different map styles and providers
+- **Responsive Design**: Works on desktop and mobile devices
+
+## Technology Stack
+
+- **Frontend**:
+
+  - Next.js 14 (React framework)
+  - TypeScript for type safety
+  - Tailwind CSS for styling
+  - Leaflet.js for mapping
+  - Leaflet Routing Machine for navigation features
+  - React Icons for UI elements
+
+- **Backend**:
+  - Next.js API routes
+  - PostgreSQL with PostGIS for spatial data
+  - Node-Postgres (pg) for database connectivity
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18.0 or later
+- PostgreSQL with PostGIS extension
+- A database with school data in the required format (see below)
+
+### Environment Setup
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```bash
+DATABASE_URL=postgresql://username:password@localhost:5432/school_map_db
+```
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/school-map-app.git
+cd school-map-app
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+3. Start the development server:
 
 ```bash
 npm run dev
@@ -10,27 +85,27 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database Schema
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The application expects the following tables in your PostgreSQL database:
 
-## Learn More
+1. `sekolah` - Contains school information
+2. `kelurahan` - Contains administrative area information
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Acknowledgements
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Leaflet.js for the amazing mapping capabilities
+- Next.js team for the powerful React framework
+- All contributors and users of this application
