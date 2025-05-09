@@ -2,8 +2,6 @@
 
 A comprehensive web application for visualizing and interacting with school data on a map. This application allows users to view school locations, access detailed information about each school, get directions to schools, and analyze school distribution statistics across different administrative areas.
 
-![School Map App Screenshot](public/logo.svg)
-
 ## Features
 
 - **Interactive School Map**: View all schools on a dynamic, interactive map with custom markers for different school types (SD, SMP, SMA)
