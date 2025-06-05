@@ -17,11 +17,10 @@ const geistMono = Geist_Mono({
 // Default metadata (will be overridden by page-specific metadata)
 export const metadata: Metadata = {
   title: {
-    template: "%s | EduMap Medan Denai",
-    default: "EduMap Medan Denai - Pemetaan Sekolah",
+    template: "%s | EduMap Medan",
+    default: "EduMap Medan - Pemetaan Sekolah",
   },
-  description:
-    "Informasi dan pemetaan sekolah di Kecamatan Medan Denai secara interaktif",
+  description: "Informasi dan pemetaan sekolah di Kota Medan secara interaktif",
 };
 
 export default function RootLayout({
@@ -33,14 +32,26 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       {" "}
       <head>
-        {" "}
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {/* Essential mobile viewport and PWA meta tags */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
         <meta name="theme-color" content="#4f46e5" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
+        <meta name="apple-mobile-web-app-title" content="EduMap Medan" />
+        <meta name="mobile-web-app-capable" content="yes" />{" "}
+        {/* Touch icons for better mobile experience */}
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#4f46e5" />
         {/* Favicon support for all platforms */}
         <link rel="icon" href="/favicon.svg" sizes="any" />
         <link
@@ -55,13 +66,7 @@ export default function RootLayout({
           sizes="16x16"
           href="/favicon-16x16.png"
         />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon.png"
-        />
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#4f46e5" />
         <link
           rel="stylesheet"
           href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState, useCallback } from "react";
 import Sidebar from "@/components/Sidebar";
+import TouchGesture from "@/components/TouchGesture";
 import { Sekolah } from "@/types/school";
 import L from "leaflet";
 import Link from "next/link";
@@ -19,12 +20,22 @@ const DynamicLocationProvider = dynamic(
 const Map = dynamic(() => import("@/components/map/Map"), {
   ssr: false,
   loading: () => (
-    <div className="flex items-center justify-center h-screen">
-      <div className="animate-pulse text-center">
-        <div className="text-xl text-white">Loading map...</div>
-        <div className="text-sm text-neutral-400">
-          Please wait while we initialize the map
+    <div className="flex items-center justify-center h-screen bg-neutral-950">
+      <div className="text-center space-y-4">
+        <div className="w-12 h-12 border-2 border-neutral-200 border-t-blue-500 rounded-full animate-spin mx-auto" />
+        <div className="space-y-2">
+          <div className="text-xl font-medium text-white">Loading map...</div>
+          <div className="text-sm text-neutral-400 max-w-sm mx-auto px-4">
+            Please wait while we initialize the interactive map with school
+            locations
+          </div>
         </div>
+      </div>
+
+      {/* Background pattern for visual interest */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent)]" />
       </div>
     </div>
   ),
@@ -154,68 +165,73 @@ export default function MapPage() {
 
   return (
     <DynamicLocationProvider>
+      {" "}
       <main className="h-screen w-screen overflow-hidden relative bg-neutral-950">
-        {/* Medium-sized floating buttons with increased spacing */}
+        {/* Responsive floating navigation */}{" "}
         <div
-          className={`fixed top-4 right-4 z-50 flex flex-col gap-3 transition-all duration-300 ${
-            showSidebar ? "-translate-x-64" : "translate-x-0"
+          className={`fixed top-4 right-4 z-50 transition-all duration-300 ${
+            showSidebar
+              ? "sm:-translate-x-72 lg:-translate-x-80 -translate-x-4"
+              : "translate-x-0"
           }`}
         >
-          <button
-            onClick={() => openSidebar("statistics")}
-            data-nav-button="true"
-            className={`bg-white/90 backdrop-blur-md p-3 rounded-lg shadow-lg border transition-all duration-300 
-              hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10
-              ${
-                activeTab === "statistics" && showSidebar
-                  ? "border-blue-500 ring-2 ring-blue-300"
-                  : "border-neutral-200"
-              }`}
-            aria-label="School Statistics"
-          >
-            <FaChartBar
-              className={`w-5 h-5 ${
-                activeTab === "statistics" && showSidebar
-                  ? "text-blue-600"
-                  : "text-neutral-900"
-              }`}
-            />
-          </button>
-
-          <button
-            onClick={() => openSidebar("routing")}
-            data-nav-button="true"
-            className={`bg-white/90 backdrop-blur-md p-3 rounded-lg shadow-lg border transition-all duration-300 
-              hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10
-              ${
-                activeTab === "routing" && showSidebar
-                  ? "border-indigo-500 ring-2 ring-indigo-300"
-                  : "border-neutral-200"
-              }`}
-            aria-label="Routing Control"
-          >
-            <FaRoute
-              className={`w-5 h-5 ${
-                activeTab === "routing" && showSidebar
-                  ? "text-indigo-600"
-                  : "text-neutral-900"
-              }`}
-            />
-          </button>
-
-          {/* Home button linking to the homepage */}
-          <Link href="/" passHref>
+          {/* Mobile: Horizontal layout on small screens, Vertical on larger screens */}
+          <div className="flex sm:flex-col flex-row gap-2 sm:gap-3">
             <button
+              onClick={() => openSidebar("statistics")}
               data-nav-button="true"
-              className={`bg-white/90 backdrop-blur-md p-3 rounded-lg shadow-lg border transition-all duration-300 
-                hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10
-                border-neutral-200`}
-              aria-label="Home"
+              className={`bg-white/95 backdrop-blur-md p-2.5 sm:p-3 rounded-xl shadow-lg border transition-all duration-300 
+                hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11
+                active:scale-95 touch-manipulation
+                ${
+                  activeTab === "statistics" && showSidebar
+                    ? "border-blue-500 ring-2 ring-blue-300/50 bg-blue-50"
+                    : "border-neutral-200/60"
+                }`}
+              aria-label="School Statistics"
             >
-              <FaHome className="w-5 h-5 text-neutral-900" />
+              <FaChartBar
+                className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                  activeTab === "statistics" && showSidebar
+                    ? "text-blue-600"
+                    : "text-neutral-700"
+                }`}
+              />
             </button>
-          </Link>
-        </div>
+            <button
+              onClick={() => openSidebar("routing")}
+              data-nav-button="true"
+              className={`bg-white/95 backdrop-blur-md p-2.5 sm:p-3 rounded-xl shadow-lg border transition-all duration-300 
+                hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11
+                active:scale-95 touch-manipulation
+                ${
+                  activeTab === "routing" && showSidebar
+                    ? "border-emerald-500 ring-2 ring-emerald-300/50 bg-emerald-50"
+                    : "border-neutral-200/60"
+                }`}
+              aria-label="Routing"
+            >
+              <FaRoute
+                className={`w-4 h-4 sm:w-5 sm:h-5 ${
+                  activeTab === "routing" && showSidebar
+                    ? "text-emerald-600"
+                    : "text-neutral-700"
+                }`}
+              />
+            </button>{" "}
+            <Link href="/">
+              <button
+                data-nav-button="true"
+                className="bg-white/95 backdrop-blur-md p-2.5 sm:p-3 rounded-xl shadow-lg border transition-all duration-300 
+                  hover:bg-white hover:shadow-xl flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11
+                  border-neutral-200/60 active:scale-95 touch-manipulation"
+                aria-label="Home"
+              >
+                <FaHome className="w-4 h-4 sm:w-5 sm:h-5 text-neutral-700" />
+              </button>
+            </Link>
+          </div>
+        </div>{" "}
         <Sidebar
           isOpen={showSidebar}
           onClose={handleSidebarClose}
@@ -229,8 +245,14 @@ export default function MapPage() {
           onSchoolTypeFilter={setSchoolTypeFilter}
           activeFilter={schoolTypeFilter}
           onTabChange={handleTabChange}
-        />{" "}
-        <div className="absolute inset-0">
+        />
+        {/* Touch gesture wrapper for mobile navigation */}
+        <TouchGesture
+          onSwipeLeft={() => setShowSidebar(true)}
+          onSwipeRight={() => setShowSidebar(false)}
+          threshold={100}
+          className="absolute inset-0"
+        >
           <Map
             data={sekolahData}
             onMapReady={handleMapReady}
@@ -242,7 +264,7 @@ export default function MapPage() {
             initialPosition={initialPosition}
             selectedSchoolId={selectedSchoolId}
           />
-        </div>
+        </TouchGesture>
       </main>
     </DynamicLocationProvider>
   );

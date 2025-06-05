@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "EduMap Medan Denai | Pemetaan Sekolah Di Kecamatan Medan Denai",
+  title: "EduMap Medan | Pemetaan Sekolah Di Kota Medan",
   description:
-    "Website pemetaan sekolah yang menyajikan informasi lengkap tentang sekolah-sekolah di Kecamatan Medan Denai secara interaktif dan akurat.",
+    "Website pemetaan sekolah yang menyajikan informasi lengkap tentang sekolah-sekolah di Kota Medan secara interaktif dan akurat.",
   keywords:
-    "peta sekolah, Medan Denai, pendidikan, GIS, sekolah unggulan, pemetaan interaktif",
+    "peta sekolah, Medan, pendidikan, GIS, sekolah unggulan, pemetaan interaktif",
 };

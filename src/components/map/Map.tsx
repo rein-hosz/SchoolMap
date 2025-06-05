@@ -10,6 +10,7 @@ import SchoolSearch from "./SchoolSearch";
 import LocationControl from "./LocationControl";
 import PolygonControl from "./PolygonControl";
 import RoutingControl, { RouteInfo } from "./RoutingControl";
+import MobileControls from "./MobileControls";
 import { useLocation } from "@/contexts/LocationContext";
 import LocationPopup from "./LocationPopup";
 
@@ -154,6 +155,7 @@ export default function Map({
   // Use type assertion for MapLayerType to fix the useState type issue
   const [mapLayer, setMapLayer] = useState<keyof typeof MAP_LAYERS>("osm");
   const [selectedSchool, setSelectedSchool] = useState<Sekolah | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const mapRef = useRef<L.Map | null>(null);
   const { userLocation } = useLocation();
 
@@ -164,6 +166,36 @@ export default function Map({
   const filteredSchools = schoolTypeFilter
     ? data.filter((school) => school.bentuk_pendidikan === schoolTypeFilter)
     : data;
+
+  // Mobile control handlers
+  const handleLocationCenter = useCallback(() => {
+    if (userLocation && mapRef.current) {
+      mapRef.current.setView([userLocation.lat, userLocation.lng], 16);
+    }
+  }, [userLocation]);
+
+  const handleFullscreenToggle = useCallback(() => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen();
+      setIsFullscreen(false);
+    }
+  }, []);
+
+  // Listen for fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
   // Handle focusing on a school passed through URL
   useEffect(() => {
     if (selectedSchoolId && data.length > 0) {
@@ -349,7 +381,14 @@ export default function Map({
           </Marker>
         )}
       </MapContainer>
-      {/* Add styling to fix z-index issues with routing containers */}
+      {/* Mobile Controls */}
+      <MobileControls
+        onLocationCenter={handleLocationCenter}
+        onFullscreenToggle={handleFullscreenToggle}
+        isFullscreen={isFullscreen}
+        showControls={true}
+      />
+      {/* Add styling to fix z-index issues with routing containers */}{" "}
       <style jsx global>{`
         .leaflet-routing-container {
           z-index: 999 !important;
@@ -362,6 +401,76 @@ export default function Map({
         /* Ensure the container doesn't create a white box */
         .leaflet-control-container {
           background: transparent !important;
+        }
+
+        /* Mobile optimizations for Leaflet controls */
+        @media (max-width: 640px) {
+          .leaflet-control-zoom {
+            margin-right: 0.5rem !important;
+            margin-bottom: 0.5rem !important;
+          }
+
+          .leaflet-control-zoom a {
+            width: 34px !important;
+            height: 34px !important;
+            line-height: 32px !important;
+            font-size: 16px !important;
+          }
+
+          .leaflet-control-attribution {
+            font-size: 10px !important;
+            padding: 2px 4px !important;
+            margin-bottom: 0.25rem !important;
+            margin-right: 0.25rem !important;
+          }
+        }
+
+        /* Improve touch targets on mobile */
+        .leaflet-interactive {
+          cursor: pointer;
+        }
+
+        /* Better mobile popup styling */
+        .leaflet-popup-content-wrapper {
+          border-radius: 12px !important;
+          max-width: calc(100vw - 3rem) !important;
+        }
+
+        .leaflet-popup-content {
+          margin: 12px 16px !important;
+          line-height: 1.5 !important;
+        }
+
+        @media (max-width: 640px) {
+          .leaflet-popup-content {
+            margin: 10px 12px !important;
+            font-size: 14px !important;
+          }
+        }
+
+        /* Hide scrollbars on mobile for search results */
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* Better line clamping for text truncation */
+        .line-clamp-1 {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 1;
+        }
+
+        .line-clamp-2 {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
         }
       `}</style>
     </div>

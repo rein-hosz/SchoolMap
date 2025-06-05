@@ -11,9 +11,9 @@ const HeroSection = () => {
       import("typed.js").then(({ default: Typed }) => {
         const typed = new Typed(titleRef.current!, {
           strings: [
-            "Pemetaan Sekolah Di Kecamatan Medan Denai",
-            "Temukan Sekolah Terbaik Di Medan Denai",
-            "Informasi Lengkap Sekolah Di Medan Denai",
+            "Pemetaan Sekolah Di Kota Medan",
+            "Temukan Sekolah Terbaik Di Medan",
+            "Informasi Lengkap Sekolah Di Medan",
           ],
           typeSpeed: 60,
           backSpeed: 40,
@@ -69,10 +69,10 @@ const HeroSection = () => {
           </span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-indigo-900 mb-6 leading-tight tracking-tight">
             <span ref={titleRef}></span>
-          </h1>
+          </h1>{" "}
           <p className="text-lg md:text-xl text-gray-700 mb-10 leading-relaxed max-w-xl">
-            Temukan lokasi dan informasi lengkap tentang sekolah-sekolah di
-            Kecamatan Medan Denai secara cepat, mudah, dan interaktif.
+            Temukan lokasi dan informasi lengkap tentang sekolah-sekolah di Kota
+            Medan secara cepat, mudah, dan interaktif.
           </p>
           <div className="flex flex-col sm:flex-row gap-5">
             <Link

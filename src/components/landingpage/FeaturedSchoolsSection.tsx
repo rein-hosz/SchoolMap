@@ -104,10 +104,10 @@ const FeaturedSchoolsSection = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-indigo-900 leading-tight">
             Sekolah Unggulan{" "}
             <span className="text-gradient">SD, SMP, dan SMA</span>
-          </h2>
+          </h2>{" "}
           <p className="text-gray-600 text-lg mb-16 max-w-2xl mx-auto">
-            Temukan sekolah terakreditasi A di Kecamatan Medan Denai yang siap
-            membantu Anda meraih prestasi pendidikan terbaik.
+            Temukan sekolah terakreditasi A di Kota Medan yang siap membantu
+            Anda meraih prestasi pendidikan terbaik.
           </p>
         </div>{" "}
         {/* Filter options */}

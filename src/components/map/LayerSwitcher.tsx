@@ -49,25 +49,27 @@ export default function LayerSwitcher({
   onLayerChange,
 }: LayerSwitcherProps) {
   const [showMenu, setShowMenu] = useState(false);
-
   return (
     <>
       <button
         onClick={() => setShowMenu(!showMenu)}
-        className="absolute bottom-8 left-8 z-[1000] bg-white/90 backdrop-blur-md p-2.5 rounded-lg shadow-lg border border-neutral-200 
-          transition-all duration-300 hover:bg-white hover:shadow-xl w-10 h-10 flex items-center justify-center"
+        className="absolute bottom-6 sm:bottom-8 left-4 sm:left-8 z-[1000] bg-white/90 backdrop-blur-md 
+          p-2.5 sm:p-3 rounded-lg shadow-lg border border-neutral-200 
+          transition-all duration-300 hover:bg-white hover:shadow-xl w-10 h-10 sm:w-11 sm:h-11 
+          flex items-center justify-center active:scale-95 touch-manipulation"
         aria-label="Change map layer"
       >
         {createElement(MAP_LAYERS[currentLayer].icon, {
           className:
-            "w-5 h-5 text-neutral-700 group-hover:text-neutral-900 transition-colors",
+            "w-4 h-4 sm:w-5 sm:h-5 text-neutral-700 group-hover:text-neutral-900 transition-colors",
         })}
       </button>
 
       {showMenu && (
         <div
-          className="absolute bottom-24 left-8 z-[1000] bg-white/95 backdrop-blur-md rounded-lg shadow-lg border 
-          border-neutral-200 p-2 space-y-1 min-w-[200px] animate-in fade-in slide-in-from-bottom-2 duration-200"
+          className="absolute bottom-16 sm:bottom-20 left-4 sm:left-8 z-[1000] bg-white/95 backdrop-blur-md 
+          rounded-lg shadow-lg border border-neutral-200 p-2 space-y-1 min-w-[180px] sm:min-w-[200px] 
+          animate-in fade-in slide-in-from-bottom-2 duration-200 max-w-[calc(100vw-2rem)]"
         >
           {Object.entries(MAP_LAYERS).map(([key, layer]) => {
             const Icon = layer.icon;
@@ -78,7 +80,8 @@ export default function LayerSwitcher({
                   onLayerChange(key as MapLayerKey);
                   setShowMenu(false);
                 }}
-                className={`w-full px-3 py-2 text-sm text-left rounded-md transition-all duration-200 flex items-center gap-3
+                className={`w-full px-3 py-2.5 sm:py-2 text-sm text-left rounded-md transition-all duration-200 
+                  flex items-center gap-3 active:scale-95 touch-manipulation
                   ${
                     currentLayer === key
                       ? "bg-blue-500 text-white hover:bg-blue-600"
@@ -86,11 +89,11 @@ export default function LayerSwitcher({
                   }`}
               >
                 <Icon
-                  className={`w-4 h-4 ${
+                  className={`w-4 h-4 flex-shrink-0 ${
                     currentLayer === key ? "text-white" : "text-neutral-500"
                   }`}
                 />
-                {layer.name}
+                <span className="truncate">{layer.name}</span>
               </button>
             );
           })}

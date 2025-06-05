@@ -12,11 +12,11 @@ const Footer = () => {
           <div className="w-full md:w-1/3 mb-8 md:mb-0">
             <div className="flex items-center mb-4">
               <FaMapMarkerAlt className="text-blue-400 text-2xl mr-2" />
-              <h3 className="text-xl font-bold">EduMap Medan Denai</h3>
-            </div>
+              <h3 className="text-xl font-bold">EduMap Medan</h3>
+            </div>{" "}
             <p className="text-gray-300 text-sm mb-4 max-w-md">
               Platform pemetaan sekolah interaktif yang menyajikan informasi
-              lengkap tentang sekolah-sekolah di Kecamatan Medan Denai.
+              lengkap tentang sekolah-sekolah di Kota Medan.
             </p>{" "}
             <div className="flex space-x-4">
               <a
@@ -63,13 +63,13 @@ const Footer = () => {
                 >
                   Sekolah Unggulan
                 </a>
-              </li>
+              </li>{" "}
               <li>
                 <a
-                  href="#tim"
+                  href="#developer"
                   className="text-gray-300 hover:text-white transition-colors"
                 >
-                  Tim Kami
+                  Developer
                 </a>
               </li>
             </ul>
@@ -95,8 +95,7 @@ const Footer = () => {
         </div>{" "}
         <div className="border-t border-indigo-800 mt-8 pt-6 text-center">
           <p className="text-sm text-indigo-300">
-            © {currentYear} EduMap Medan Denai. Dikembangkan oleh Mahasiswa
-            Politeknik Negeri Medan
+            © {currentYear} EduMap Medan. Dikembangkan oleh Muhammad Thariq
           </p>
         </div>
       </div>

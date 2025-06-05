@@ -25,9 +25,10 @@ const AboutSection = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-indigo-600 rounded-3xl transform rotate-3"></div>
               <div className="relative overflow-hidden rounded-2xl shadow-xl border-8 border-white">
+                {" "}
                 <img
                   src="/dashboard/point-polygon.png"
-                  alt="Peta Kecamatan Medan Denai"
+                  alt="Peta Kota Medan"
                   className="w-full h-auto transform hover:scale-105 transition-transform duration-700"
                 />
               </div>
@@ -36,10 +37,11 @@ const AboutSection = () => {
 
           <div className="text-left lg:order-1" data-aos="fade-right">
             <div className="bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-xl border border-indigo-100">
+              {" "}
               <p className="mb-4 text-gray-700 leading-relaxed">
                 Website{" "}
                 <strong className="text-indigo-700 font-semibold">
-                  Pemetaan Sekolah Di Kecamatan Medan Denai
+                  Pemetaan Sekolah Di Kota Medan
                 </strong>{" "}
                 ini dikembangkan oleh mahasiswa Politeknik Negeri Medan dengan
                 tujuan utama untuk mempermudah masyarakat dalam mencari

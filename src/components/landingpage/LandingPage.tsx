@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import HeroSection from "./HeroSection";
 import AboutSection from "./AboutSection";
 import FeaturedSchoolsSection from "./FeaturedSchoolsSection";
-import TeamSection from "./TeamSection";
+import Developer from "./Developer";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
 
@@ -28,7 +28,7 @@ const LandingPage = () => {
       <HeroSection />
       <AboutSection />
       <FeaturedSchoolsSection />
-      <TeamSection />
+      <Developer />
       <Footer />
       <ScrollToTop />
     </div>

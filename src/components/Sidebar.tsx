@@ -95,13 +95,19 @@ export default function Sidebar({
     );
     // You could filter schools by kelurahan here or in a parent component
   };
-
   return (
     <div
       ref={sidebarRef}
-      className={`fixed top-0 right-0 h-full w-64 bg-white shadow-xl z-40 transform transition-transform duration-300 border-l border-neutral-200 flex flex-col ${
-        isOpen ? "translate-x-0" : "translate-x-full"
-      }`}
+      className={`fixed top-0 right-0 h-full w-full sm:w-72 lg:w-80 bg-white/95 backdrop-blur-lg shadow-2xl 
+        border-l border-neutral-200/80 z-40 transform transition-all duration-300 ease-in-out flex flex-col
+        ${
+          isOpen
+            ? "translate-x-0 opacity-100"
+            : "translate-x-full opacity-0 pointer-events-none"
+        }`}
+      style={{
+        maxWidth: "min(100vw, 20rem)", // Responsive max width
+      }}
     >
       {currentTab === "routing" ? (
         <RoutingSidebar
@@ -123,18 +129,15 @@ export default function Sidebar({
               <div className="text-lg font-bold text-neutral-800">
                 Peta Sekolah
               </div>
-            </div>
-
+            </div>{" "}
             {/* Region Info */}
             <div className="mt-4">
               <h2 className="text-sm font-medium text-neutral-500">Wilayah</h2>
-              <p className="text-neutral-800 text-lg mt-1">
-                Kecamatan Medan Denai
-              </p>
+              <p className="text-neutral-800 text-lg mt-1">Kota Medan</p>
             </div>
           </div>
 
-          {/* Tab Switcher - Below "Kecamatan Medan Denai" */}
+          {/* Tab Switcher - Below "Kota Medan" */}
           <div className="px-6 mb-2 flex-shrink-0">
             <div className="flex bg-neutral-100 rounded-lg p-1">
               <button

@@ -34,10 +34,8 @@ const Navbar = () => {
         if (!scrolled) setScrolled(true);
       } else {
         if (scrolled) setScrolled(false);
-      }
-
-      // Update active section based on scroll position with improved detection
-      const sections = ["beranda", "tentang", "sekolah", "tim"];
+      } // Update active section based on scroll position with improved detection
+      const sections = ["beranda", "tentang", "sekolah", "developer"];
       let closestSection = null;
       let closestDistance = Number.MAX_VALUE;
 
@@ -94,9 +92,9 @@ const Navbar = () => {
               📍
             </span>
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-          </div>
+          </div>{" "}
           <span className="bg-gradient-to-r from-indigo-700 to-blue-600 text-transparent bg-clip-text group-hover:from-indigo-600 group-hover:to-blue-500 transition-colors duration-300">
-            EduMap Medan Denai
+            EduMap Medan
           </span>
         </Link>
 
@@ -140,21 +138,20 @@ const Navbar = () => {
             {isActive("sekolah") && (
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 rounded-full"></span>
             )}
-          </a>
+          </a>{" "}
           <a
-            href="#tim"
+            href="#developer"
             className={`font-medium transition-all duration-300 relative py-1.5 px-2 ${
-              isActive("tim")
+              isActive("developer")
                 ? "text-indigo-600"
                 : "text-gray-700 hover:text-indigo-600"
             } hover:bg-indigo-50 rounded-md`}
           >
-            <span className="relative z-10">Tim Kami</span>
-            {isActive("tim") && (
+            <span className="relative z-10">Developer</span>
+            {isActive("developer") && (
               <span className="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 rounded-full"></span>
             )}
           </a>
-
           {/* Active indicator */}
           <div
             ref={indicatorRef}
@@ -274,18 +271,18 @@ const Navbar = () => {
             {isActive("sekolah") && (
               <span className="absolute inset-0 bg-indigo-100/50"></span>
             )}
-          </a>
+          </a>{" "}
           <a
-            href="#tim"
+            href="#developer"
             className={`py-3 px-4 rounded-lg font-medium transition-all duration-300 relative overflow-hidden ${
-              isActive("tim")
+              isActive("developer")
                 ? "text-white bg-indigo-600 shadow-sm"
                 : "text-gray-700 hover:text-indigo-600 hover:bg-indigo-50"
             }`}
             onClick={closeMenu}
           >
-            <span className="relative z-10">Tim Kami</span>
-            {isActive("tim") && (
+            <span className="relative z-10">Developer</span>
+            {isActive("developer") && (
               <span className="absolute inset-0 bg-indigo-100/50"></span>
             )}
           </a>
